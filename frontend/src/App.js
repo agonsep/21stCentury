@@ -142,12 +142,7 @@ function App() {
             </div>
 
             <div className="card">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h2>Users ({users.length})</h2>
-                <button className="button" onClick={fetchUsers}>
-                  Refresh
-                </button>
-              </div>
+              <h2>Users ({users.length})</h2>
               
               {loading ? (
                 <div className="loading">Loading users...</div>
@@ -164,12 +159,7 @@ function App() {
             {productError && <div className="error">{productError}</div>}
 
             <div className="card">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h2>Products ({products.length})</h2>
-                <button className="button" onClick={fetchProducts}>
-                  Refresh
-                </button>
-              </div>
+              <h2>Products ({products.length})</h2>
               
               {productsLoading ? (
                 <div className="loading">Loading products...</div>

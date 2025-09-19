@@ -17,7 +17,7 @@ const ProductManagement = ({ onBack }) => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5001/api/products');
+      const response = await fetch('/api/products');
       if (response.ok) {
         const data = await response.json();
         setProducts(data);
@@ -44,8 +44,8 @@ const ProductManagement = ({ onBack }) => {
   const handleFormSubmit = async (productData) => {
     try {
       const url = editingProduct 
-        ? `http://localhost:5001/api/products/${editingProduct.id}`
-        : 'http://localhost:5001/api/products';
+        ? `/api/products/${editingProduct.id}`
+        : '/api/products';
       
       const method = editingProduct ? 'PUT' : 'POST';
       
@@ -99,7 +99,7 @@ const ProductManagement = ({ onBack }) => {
     const { productId } = deleteModal;
     
     try {
-      const response = await fetch(`http://localhost:5001/api/products/${productId}`, {
+      const response = await fetch(`/api/products/${productId}`, {
         method: 'DELETE',
       });
 
