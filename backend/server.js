@@ -318,11 +318,15 @@ app.use((err, req, res, next) => {
 if (process.env.NODE_ENV === 'production') {
   const path = require('path');
   
+  console.log('Production mode: Serving static files from React build');
+  console.log('Build path:', path.join(__dirname, '../frontend/build'));
+  
   // Serve static files from the React app build directory
   app.use(express.static(path.join(__dirname, '../frontend/build')));
   
   // Handle React routing, return all requests to React app
   app.get('*', (req, res) => {
+    console.log('Serving React app for route:', req.path);
     res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
   });
 } else {
