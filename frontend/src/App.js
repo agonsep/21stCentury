@@ -24,6 +24,23 @@ function App() {
     fetchUsers();
     fetchProducts();
     checkServerHealth();
+    
+    // Check for admin access in URL path
+    if (window.location.pathname === '/admin') {
+      setCurrentView('admin-login');
+    }
+    
+    // Listen for URL changes
+    const handlePopState = () => {
+      if (window.location.pathname === '/admin') {
+        setCurrentView('admin-login');
+      } else {
+        setCurrentView('home');
+      }
+    };
+    
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
   const fetchUsers = async () => {
@@ -79,11 +96,13 @@ function App() {
   const handleAdminLogin = () => {
     setIsAdminAuthenticated(true);
     setCurrentView('product-management');
+    window.history.pushState({}, '', '/admin');
   };
 
   const handleAdminLogout = () => {
     setIsAdminAuthenticated(false);
     setCurrentView('home');
+    window.history.pushState({}, '', '/');
   };
 
   const handleViewChange = (view) => {

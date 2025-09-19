@@ -32,14 +32,8 @@ const Navigation = ({ currentView, onViewChange, userCount, productCount, server
       icon: '⚙️',
       description: 'Product Management'
     });
-  } else {
-    navItems.push({
-      id: 'admin',
-      label: 'Admin Access',
-      icon: '🔐',
-      description: 'Administrator Login'
-    });
   }
+  // Admin access hidden - remove the else block to hide admin login link
 
   return (
     <div className="navigation">
