@@ -11,6 +11,7 @@ cmds = [
 [phases.build]
 cmds = [
   'cd backend && npx prisma generate',
+  'npm run test',
   'cd frontend && npm run build'
 ]
 
