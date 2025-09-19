@@ -331,8 +331,13 @@ if (process.env.NODE_ENV === 'production') {
   // Serve static files from the React app build directory
   app.use(express.static(buildPath));
   
-  // Handle React routing, return all requests to React app
+  // Handle React routing, return all requests to React app (except API routes)
   app.get('*', (req, res) => {
+    // Don't serve React app for API routes
+    if (req.path.startsWith('/api/')) {
+      return res.status(404).json({ error: 'API route not found' });
+    }
+    
     const indexPath = path.join(buildPath, 'index.html');
     console.log('Serving React app for route:', req.path);
     console.log('Index.html exists:', fs.existsSync(indexPath));
