@@ -317,17 +317,31 @@ app.use((err, req, res, next) => {
 // Serve static files from React build in production
 if (process.env.NODE_ENV === 'production') {
   const path = require('path');
+  const fs = require('fs');
   
+  const buildPath = path.join(__dirname, '../frontend/build');
   console.log('Production mode: Serving static files from React build');
-  console.log('Build path:', path.join(__dirname, '../frontend/build'));
+  console.log('Build path:', buildPath);
+  console.log('Build directory exists:', fs.existsSync(buildPath));
+  
+  if (fs.existsSync(buildPath)) {
+    console.log('Build directory contents:', fs.readdirSync(buildPath));
+  }
   
   // Serve static files from the React app build directory
-  app.use(express.static(path.join(__dirname, '../frontend/build')));
+  app.use(express.static(buildPath));
   
   // Handle React routing, return all requests to React app
   app.get('*', (req, res) => {
+    const indexPath = path.join(buildPath, 'index.html');
     console.log('Serving React app for route:', req.path);
-    res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+    console.log('Index.html exists:', fs.existsSync(indexPath));
+    
+    if (fs.existsSync(indexPath)) {
+      res.sendFile(indexPath);
+    } else {
+      res.status(404).json({ error: 'React app not built properly - index.html not found' });
+    }
   });
 } else {
   // 404 handler for development
