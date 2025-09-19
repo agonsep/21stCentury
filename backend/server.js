@@ -311,6 +311,153 @@ app.delete('/api/products/:id', async (req, res) => {
   }
 });
 
+// ===== MAPS API ENDPOINTS =====
+
+// Get all saved maps
+app.get('/api/maps', async (req, res) => {
+  try {
+    const maps = await prisma.map.findMany({
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        name: true,
+        createdAt: true,
+        updatedAt: true,
+        icons: true,
+        connections: true
+      }
+    });
+    
+    // Parse JSON strings and add icon/connection counts
+    const parsedMaps = maps.map(map => ({
+      ...map,
+      icons: JSON.parse(map.icons || '[]'),
+      connections: JSON.parse(map.connections || '[]')
+    }));
+    
+    res.json(parsedMaps);
+  } catch (error) {
+    console.error('Error fetching maps:', error);
+    res.status(500).json({ error: 'Failed to fetch maps' });
+  }
+});
+
+// Get a specific map
+app.get('/api/maps/:id', async (req, res) => {
+  const mapId = parseInt(req.params.id);
+  
+  try {
+    const map = await prisma.map.findUnique({
+      where: { id: mapId }
+    });
+    
+    if (!map) {
+      return res.status(404).json({ error: 'Map not found' });
+    }
+    
+    // Parse JSON strings
+    const parsedMap = {
+      ...map,
+      center: JSON.parse(map.center),
+      icons: JSON.parse(map.icons || '[]'),
+      connections: JSON.parse(map.connections || '[]')
+    };
+    
+    res.json(parsedMap);
+  } catch (error) {
+    console.error('Error fetching map:', error);
+    res.status(500).json({ error: 'Failed to fetch map' });
+  }
+});
+
+// Save a new map
+app.post('/api/maps', async (req, res) => {
+  const { name, center, layer, icons, connections } = req.body;
+  
+  if (!name || !center) {
+    return res.status(400).json({ error: 'Name and center are required' });
+  }
+  
+  try {
+    const newMap = await prisma.map.create({
+      data: {
+        name: name.trim(),
+        center: JSON.stringify(center),
+        layer: layer || 'satellite',
+        icons: JSON.stringify(icons || []),
+        connections: JSON.stringify(connections || [])
+      }
+    });
+    
+    res.status(201).json({
+      message: 'Map saved successfully',
+      map: {
+        ...newMap,
+        center: JSON.parse(newMap.center),
+        icons: JSON.parse(newMap.icons),
+        connections: JSON.parse(newMap.connections)
+      }
+    });
+  } catch (error) {
+    console.error('Error saving map:', error);
+    res.status(500).json({ error: 'Failed to save map' });
+  }
+});
+
+// Update a map
+app.put('/api/maps/:id', async (req, res) => {
+  const mapId = parseInt(req.params.id);
+  const { name, center, layer, icons, connections } = req.body;
+  
+  try {
+    const updatedMap = await prisma.map.update({
+      where: { id: mapId },
+      data: {
+        ...(name && { name: name.trim() }),
+        ...(center && { center: JSON.stringify(center) }),
+        ...(layer && { layer }),
+        ...(icons && { icons: JSON.stringify(icons) }),
+        ...(connections && { connections: JSON.stringify(connections) })
+      }
+    });
+    
+    res.json({
+      message: 'Map updated successfully',
+      map: {
+        ...updatedMap,
+        center: JSON.parse(updatedMap.center),
+        icons: JSON.parse(updatedMap.icons),
+        connections: JSON.parse(updatedMap.connections)
+      }
+    });
+  } catch (error) {
+    console.error('Error updating map:', error);
+    if (error.code === 'P2025') {
+      return res.status(404).json({ error: 'Map not found' });
+    }
+    res.status(500).json({ error: 'Failed to update map' });
+  }
+});
+
+// Delete a map
+app.delete('/api/maps/:id', async (req, res) => {
+  const mapId = parseInt(req.params.id);
+  
+  try {
+    await prisma.map.delete({
+      where: { id: mapId }
+    });
+    
+    res.json({ message: 'Map deleted successfully', id: mapId });
+  } catch (error) {
+    console.error('Error deleting map:', error);
+    if (error.code === 'P2025') {
+      return res.status(404).json({ error: 'Map not found' });
+    }
+    res.status(500).json({ error: 'Failed to delete map' });
+  }
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);

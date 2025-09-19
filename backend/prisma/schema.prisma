@@ -37,3 +37,16 @@ model Product {
 
   @@map("products")
 }
+
+model Map {
+  id          Int       @id @default(autoincrement())
+  name        String
+  center      String    // JSON string storing [lat, lng]
+  layer       String    @default("satellite")
+  icons       String    // JSON string storing placed icons array
+  connections String    // JSON string storing connections array
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  @@map("maps")
+}

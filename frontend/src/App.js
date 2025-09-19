@@ -7,6 +7,7 @@ import UserForm from './components/UserForm';
 import ProductList from './components/ProductList';
 import ProductManagement from './components/ProductManagement';
 import AdminLogin from './components/AdminLogin';
+import MapIcons from './components/MapIcons';
 import './App.css';
 
 function App() {
@@ -28,12 +29,16 @@ function App() {
     // Check for admin access in URL path
     if (window.location.pathname === '/admin') {
       setCurrentView('admin-login');
+    } else if (window.location.pathname === '/map-icons') {
+      setCurrentView('map-icons');
     }
     
     // Listen for URL changes
     const handlePopState = () => {
       if (window.location.pathname === '/admin') {
         setCurrentView('admin-login');
+      } else if (window.location.pathname === '/map-icons') {
+        setCurrentView('map-icons');
       } else {
         setCurrentView('home');
       }
@@ -186,6 +191,9 @@ function App() {
             onBack={handleAdminLogout}
           />
         );
+
+      case 'map-icons':
+        return <MapIcons />;
 
       default:
         return <WelcomePage onNavigate={handleViewChange} userCount={users.length} productCount={products.length} />;

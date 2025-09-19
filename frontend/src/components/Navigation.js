@@ -21,6 +21,12 @@ const Navigation = ({ currentView, onViewChange, userCount, productCount, server
       icon: '📦',
       description: 'Product Catalog',
       count: productCount
+    },
+    { 
+      id: 'map-icons', 
+      label: 'Map Icons', 
+      icon: '🗺️',
+      description: 'Infrastructure Mapping'
     }
   ];
 

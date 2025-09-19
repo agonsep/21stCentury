@@ -69,10 +69,11 @@ const initializeDatabase = () => {
 // Seed initial data
 const seedDatabase = async () => {
   try {
-    // Check if data already exists
+    // Check if database already has data
+    const userCount = await prisma.user.count();
     const productCount = await prisma.product.count();
-    
-    if (productCount > 0) {
+
+    if (userCount > 0 || productCount > 0) {
       console.log('Database already has data, skipping seed');
       return;
     }
@@ -86,10 +87,14 @@ const seedDatabase = async () => {
       { name: 'Bob Johnson', email: 'bob@example.com' }
     ];
 
-    // Insert users using Prisma
-    await prisma.user.createMany({
-      data: users
-    });
+    // Insert users using upsert to avoid duplicates
+    for (const user of users) {
+      await prisma.user.upsert({
+        where: { email: user.email },
+        update: {},
+        create: user
+      });
+    }
 
     // Sample products (existing data)
     const products = [
@@ -332,28 +337,407 @@ const seedDatabase = async () => {
           nevi_eligible: 1,
           documents: JSON.stringify(["Installation Guide", "Technical Manual", "Compliance Docs"]),
           description: "Modular DC charging solution with flexible power distribution and scalable architecture."
+        },
+        {
+          category: "EV Charger",
+          name: "Schneider Electric EVF40",
+          cost: 65000,
+          currency: "USD",
+          rating: "4.2/5",
+          manufacturer: "Schneider Electric",
+          origin: "France",
+          efficiency: 92,
+          lifetime: 15,
+          maintenance_cost: 2400,
+          footprint: "Floor-standing, 38\" x 26\" x 78\"",
+          nevi_eligible: 1,
+          documents: JSON.stringify(["Installation Manual", "Technical Specs", "NEVI Docs"]),
+          description: "High-power DC charging station with integrated payment system and cloud connectivity."
+        },
+        {
+          category: "EV Charger",
+          name: "Siemens VersiCharge",
+          cost: 55000,
+          currency: "USD",
+          rating: "4.1/5",
+          manufacturer: "Siemens",
+          origin: "Germany",
+          efficiency: 91,
+          lifetime: 14,
+          maintenance_cost: 2200,
+          footprint: "Floor-standing, 36\" x 24\" x 76\"",
+          nevi_eligible: 1,
+          documents: JSON.stringify(["User Manual", "Installation Guide", "Certification"]),
+          description: "Versatile DC fast charger with modular design and advanced diagnostics."
+        },
+        {
+          category: "EV Charger",
+          name: "GE WattStation",
+          cost: 45000,
+          currency: "USD",
+          rating: "3.9/5",
+          manufacturer: "General Electric",
+          origin: "USA",
+          efficiency: 89,
+          lifetime: 12,
+          maintenance_cost: 1900,
+          footprint: "Floor-standing, 34\" x 22\" x 72\"",
+          nevi_eligible: 1,
+          documents: JSON.stringify(["Installation Manual", "Service Guide", "Warranty Info"]),
+          description: "Reliable DC fast charging solution with proven industrial-grade components."
+        },
+        {
+          category: "EV Charger",
+          name: "Blink IQ 200",
+          cost: 35000,
+          currency: "USD",
+          rating: "3.8/5",
+          manufacturer: "Blink Charging",
+          origin: "USA",
+          efficiency: 87,
+          lifetime: 10,
+          maintenance_cost: 1600,
+          footprint: "Floor-standing, 32\" x 20\" x 68\"",
+          nevi_eligible: 0,
+          documents: JSON.stringify(["User Guide", "Installation Manual", "Troubleshooting"]),
+          description: "Network-connected DC charger with mobile app integration and remote monitoring."
+        },
+        {
+          category: "EV Charger",
+          name: "EVgo eXtend",
+          cost: 72000,
+          currency: "USD",
+          rating: "4.6/5",
+          manufacturer: "EVgo",
+          origin: "USA",
+          efficiency: 94,
+          lifetime: 16,
+          maintenance_cost: 2600,
+          footprint: "Floor-standing, 40\" x 28\" x 80\"",
+          nevi_eligible: 1,
+          documents: JSON.stringify(["Technical Manual", "Installation Guide", "Network Specs"]),
+          description: "High-power network charging station with dynamic load management and payment processing."
+        },
+        {
+          category: "EV Charger",
+          name: "Phihong PSDA",
+          cost: 48000,
+          currency: "USD",
+          rating: "4.0/5",
+          manufacturer: "Phihong",
+          origin: "Taiwan",
+          efficiency: 90,
+          lifetime: 11,
+          maintenance_cost: 1700,
+          footprint: "Floor-standing, 35\" x 23\" x 74\"",
+          nevi_eligible: 0,
+          documents: JSON.stringify(["Installation Guide", "Service Manual", "Compliance"]),
+          description: "Compact DC charging station with efficient power conversion and thermal management."
+        },
+        {
+          category: "EV Charger",
+          name: "Efacec QC45",
+          cost: 58000,
+          currency: "USD",
+          rating: "4.3/5",
+          manufacturer: "Efacec",
+          origin: "Portugal",
+          efficiency: 93,
+          lifetime: 14,
+          maintenance_cost: 2100,
+          footprint: "Floor-standing, 37\" x 25\" x 77\"",
+          nevi_eligible: 1,
+          documents: JSON.stringify(["Technical Documentation", "Installation Manual", "NEVI Compliance"]),
+          description: "Multi-standard DC fast charger with CHAdeMO and CCS connectors."
+        },
+        {
+          category: "EV Charger",
+          name: "IESA Level 3",
+          cost: 52000,
+          currency: "USD",
+          rating: "3.7/5",
+          manufacturer: "IESA",
+          origin: "India",
+          efficiency: 88,
+          lifetime: 9,
+          maintenance_cost: 1400,
+          footprint: "Floor-standing, 33\" x 21\" x 70\"",
+          nevi_eligible: 0,
+          documents: JSON.stringify(["User Manual", "Installation Guide", "Maintenance Schedule"]),
+          description: "Cost-effective DC charging solution for emerging markets with basic functionality."
+        },
+        {
+          category: "EV Charger",
+          name: "Heliox Fast",
+          cost: 63000,
+          currency: "USD",
+          rating: "4.4/5",
+          manufacturer: "Heliox",
+          origin: "Netherlands",
+          efficiency: 95,
+          lifetime: 15,
+          maintenance_cost: 2300,
+          footprint: "Floor-standing, 39\" x 27\" x 79\"",
+          nevi_eligible: 1,
+          documents: JSON.stringify(["Installation Manual", "Technical Specs", "Fleet Integration"]),
+          description: "High-power charging system optimized for bus and fleet applications."
+        },
+        {
+          category: "EV Charger",
+          name: "IONITY HPC",
+          cost: 85000,
+          currency: "USD",
+          rating: "4.7/5",
+          manufacturer: "IONITY",
+          origin: "Germany",
+          efficiency: 96,
+          lifetime: 18,
+          maintenance_cost: 3200,
+          footprint: "Floor-standing, 42\" x 30\" x 82\"",
+          nevi_eligible: 1,
+          documents: JSON.stringify(["Technical Manual", "Installation Guide", "Network Protocol"]),
+          description: "Ultra-high power charging solution for highway corridors with 350kW capability."
+        },
+        {
+          category: "EV Charger",
+          name: "Shell Recharge",
+          cost: 67000,
+          currency: "USD",
+          rating: "4.2/5",
+          manufacturer: "Shell",
+          origin: "UK",
+          efficiency: 92,
+          lifetime: 14,
+          maintenance_cost: 2400,
+          footprint: "Floor-standing, 38\" x 26\" x 78\"",
+          nevi_eligible: 1,
+          documents: JSON.stringify(["Installation Guide", "Service Manual", "Brand Guidelines"]),
+          description: "Integrated fuel station charging solution with payment and loyalty system integration."
+        },
+        {
+          category: "EV Charger",
+          name: "BP Pulse 150",
+          cost: 71000,
+          currency: "USD",
+          rating: "4.5/5",
+          manufacturer: "BP",
+          origin: "UK",
+          efficiency: 94,
+          lifetime: 16,
+          maintenance_cost: 2700,
+          footprint: "Floor-standing, 40\" x 28\" x 80\"",
+          nevi_eligible: 1,
+          documents: JSON.stringify(["Technical Documentation", "Installation Manual", "Network Integration"]),
+          description: "High-power charging solution with integrated renewable energy management."
+        },
+        {
+          category: "EV Charger",
+          name: "Petro-Canada EV",
+          cost: 59000,
+          currency: "USD",
+          rating: "4.1/5",
+          manufacturer: "Petro-Canada",
+          origin: "Canada",
+          efficiency: 91,
+          lifetime: 13,
+          maintenance_cost: 2000,
+          footprint: "Floor-standing, 36\" x 24\" x 76\"",
+          nevi_eligible: 0,
+          documents: JSON.stringify(["Installation Manual", "Service Guide", "Canadian Standards"]),
+          description: "Cold-weather optimized DC charger designed for Canadian climate conditions."
+        },
+        {
+          category: "EV Charger",
+          name: "Volta Charging",
+          cost: 38000,
+          currency: "USD",
+          rating: "3.6/5",
+          manufacturer: "Volta",
+          origin: "USA",
+          efficiency: 86,
+          lifetime: 8,
+          maintenance_cost: 1300,
+          footprint: "Floor-standing, 31\" x 19\" x 66\"",
+          nevi_eligible: 0,
+          documents: JSON.stringify(["User Guide", "Installation Manual", "Advertising Specs"]),
+          description: "Media-enabled charging station with integrated digital advertising displays."
+        },
+        {
+          category: "EV Charger",
+          name: "FreeWire Boost",
+          cost: 82000,
+          currency: "USD",
+          rating: "4.8/5",
+          manufacturer: "FreeWire",
+          origin: "USA",
+          efficiency: 97,
+          lifetime: 17,
+          maintenance_cost: 2900,
+          footprint: "Mobile unit, 72\" x 36\" x 84\"",
+          nevi_eligible: 1,
+          documents: JSON.stringify(["Technical Manual", "Deployment Guide", "Battery Management"]),
+          description: "Battery-integrated mobile charging solution that can be deployed without grid upgrades."
+        },
+        {
+          category: "EV Charger",
+          name: "Ampère Charge",
+          cost: 46000,
+          currency: "USD",
+          rating: "3.9/5",
+          manufacturer: "Ampère",
+          origin: "France",
+          efficiency: 89,
+          lifetime: 11,
+          maintenance_cost: 1600,
+          footprint: "Floor-standing, 34\" x 22\" x 72\"",
+          nevi_eligible: 0,
+          documents: JSON.stringify(["Installation Guide", "Service Manual", "EU Compliance"]),
+          description: "European-standard DC charger with Type 2 and CCS compatibility."
+        },
+        {
+          category: "EV Charger",
+          name: "Porsche Turbo",
+          cost: 95000,
+          currency: "USD",
+          rating: "4.9/5",
+          manufacturer: "Porsche",
+          origin: "Germany",
+          efficiency: 98,
+          lifetime: 20,
+          maintenance_cost: 3800,
+          footprint: "Floor-standing, 44\" x 32\" x 86\"",
+          nevi_eligible: 1,
+          documents: JSON.stringify(["Premium Installation Guide", "Technical Specs", "Brand Standards"]),
+          description: "Ultra-premium high-power charging solution for luxury automotive applications."
+        },
+        {
+          category: "EV Charger",
+          name: "Mercedes EQC",
+          cost: 78000,
+          currency: "USD",
+          rating: "4.6/5",
+          manufacturer: "Mercedes-Benz",
+          origin: "Germany",
+          efficiency: 95,
+          lifetime: 17,
+          maintenance_cost: 2800,
+          footprint: "Floor-standing, 41\" x 29\" x 81\"",
+          nevi_eligible: 1,
+          documents: JSON.stringify(["Installation Manual", "Brand Guidelines", "Premium Service"]),
+          description: "Luxury brand charging station with premium materials and integrated customer experience."
+        },
+        {
+          category: "EV Charger",
+          name: "Audi e-tron",
+          cost: 73000,
+          currency: "USD",
+          rating: "4.4/5",
+          manufacturer: "Audi",
+          origin: "Germany",
+          efficiency: 94,
+          lifetime: 16,
+          maintenance_cost: 2600,
+          footprint: "Floor-standing, 39\" x 27\" x 79\"",
+          nevi_eligible: 1,
+          documents: JSON.stringify(["Technical Documentation", "Installation Guide", "Quattro Network"]),
+          description: "Premium charging solution with quattro network integration and luxury design."
+        },
+        {
+          category: "EV Charger",
+          name: "BMW iCharging",
+          cost: 69000,
+          currency: "USD",
+          rating: "4.3/5",
+          manufacturer: "BMW",
+          origin: "Germany",
+          efficiency: 93,
+          lifetime: 15,
+          maintenance_cost: 2400,
+          footprint: "Floor-standing, 38\" x 26\" x 78\"",
+          nevi_eligible: 1,
+          documents: JSON.stringify(["Installation Manual", "i-Series Integration", "Service Guide"]),
+          description: "Premium charging station designed for BMW i-series integration and dealer networks."
+        },
+        {
+          category: "EV Charger",
+          name: "Rivian Adventure",
+          cost: 54000,
+          currency: "USD",
+          rating: "4.2/5",
+          manufacturer: "Rivian",
+          origin: "USA",
+          efficiency: 91,
+          lifetime: 12,
+          maintenance_cost: 1900,
+          footprint: "Floor-standing, 36\" x 24\" x 76\"",
+          nevi_eligible: 1,
+          documents: JSON.stringify(["Adventure Guide", "Installation Manual", "Off-Grid Specs"]),
+          description: "Rugged charging solution designed for outdoor and adventure vehicle applications."
+        },
+        {
+          category: "EV Charger",
+          name: "Lucid Air",
+          cost: 88000,
+          currency: "USD",
+          rating: "4.7/5",
+          manufacturer: "Lucid Motors",
+          origin: "USA",
+          efficiency: 96,
+          lifetime: 18,
+          maintenance_cost: 3100,
+          footprint: "Floor-standing, 42\" x 30\" x 82\"",
+          nevi_eligible: 1,
+          documents: JSON.stringify(["Technical Manual", "Luxury Installation", "Air Network"]),
+          description: "Ultra-luxury high-efficiency charging solution with advanced thermal management."
+        },
+        {
+          category: "EV Charger",
+          name: "Ford Lightning",
+          cost: 51000,
+          currency: "USD",
+          rating: "4.0/5",
+          manufacturer: "Ford",
+          origin: "USA",
+          efficiency: 90,
+          lifetime: 13,
+          maintenance_cost: 1800,
+          footprint: "Floor-standing, 35\" x 23\" x 74\"",
+          nevi_eligible: 1,
+          documents: JSON.stringify(["Installation Guide", "F-150 Integration", "BlueOval Network"]),
+          description: "Commercial-grade charging solution optimized for Ford Lightning and fleet applications."
         }
       ];
 
-    // Insert products using Prisma
-    await prisma.product.createMany({
-      data: products.map(product => ({
-        category: product.category,
-        name: product.name,
-        cost: product.cost,
-        currency: product.currency,
-        rating: product.rating,
-        manufacturer: product.manufacturer,
-        origin: product.origin,
-        efficiency: product.efficiency,
-        lifetime: product.lifetime,
-        maintenanceCost: product.maintenance_cost,
-        footprint: product.footprint,
-        neviEligible: Boolean(product.nevi_eligible),
-        documents: product.documents,
-        description: product.description
-      }))
-    });
+    // Insert products safely - only add if they don't exist
+    for (const product of products) {
+      const existingProduct = await prisma.product.findFirst({
+        where: {
+          name: product.name,
+          manufacturer: product.manufacturer
+        }
+      });
+
+      if (!existingProduct) {
+        await prisma.product.create({
+          data: {
+            category: product.category,
+            name: product.name,
+            cost: product.cost,
+            currency: product.currency,
+            rating: product.rating,
+            manufacturer: product.manufacturer,
+            origin: product.origin,
+            efficiency: product.efficiency,
+            lifetime: product.lifetime,
+            maintenanceCost: product.maintenance_cost,
+            footprint: product.footprint,
+            neviEligible: Boolean(product.nevi_eligible),
+            documents: product.documents,
+            description: product.description
+          }
+        });
+      }
+    }
 
     console.log('Database seeded successfully');
   } catch (error) {
