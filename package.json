@@ -11,7 +11,12 @@
     "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
     "start": "cd backend && npm start",
     "build:prod": "npm run install-all && cd backend && npx prisma generate && cd ../frontend && npm run build",
-    "heroku-postbuild": "npm run build"
+    "heroku-postbuild": "npm run build",
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:backend": "cd backend && npm test",
+    "test:frontend": "cd frontend && npm test -- --watchAll=false",
+    "test:watch": "concurrently \"npm run test:backend -- --watch\" \"npm run test:frontend\"",
+    "test:coverage": "npm run test:backend -- --coverage && npm run test:frontend -- --coverage --watchAll=false"
   },
   "keywords": ["node", "react", "express", "fullstack"],
   "author": "",
