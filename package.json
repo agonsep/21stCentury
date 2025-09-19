@@ -1,0 +1,22 @@
+{
+  "name": "first-node-app",
+  "version": "1.0.0",
+  "description": "Full-stack Node.js and React application",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd backend && npm run dev",
+    "client": "cd frontend && npm start",
+    "build": "cd frontend && npm run build",
+    "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "start": "cd backend && npm start",
+    "build:prod": "npm run install-all && cd backend && npx prisma generate && cd ../frontend && npm run build",
+    "heroku-postbuild": "npm run build:prod"
+  },
+  "keywords": ["node", "react", "express", "fullstack"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:../database.sqlite"
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique(map: "sqlite_autoindex_users_1")
+  createdAt DateTime? @default(now()) @map("created_at")
+
+  @@map("users")
+}
+
+model Product {
+  id              Int       @id @default(autoincrement())
+  category        String
+  name            String
+  cost            Float
+  currency        String?   @default("USD")
+  rating          String
+  manufacturer    String
+  origin          String?
+  efficiency      Float?
+  lifetime        Int?
+  maintenanceCost Float?    @map("maintenance_cost")
+  footprint       String?
+  neviEligible    Boolean?  @default(false) @map("nevi_eligible")
+  documents       String?
+  description     String?
+  createdAt       DateTime? @default(now()) @map("created_at")
+  updatedAt       DateTime? @default(now()) @updatedAt @map("updated_at")
+
+  @@map("products")
+}
