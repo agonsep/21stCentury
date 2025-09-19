@@ -6,3 +6,16 @@ frontend/build/
 *.log
 .DS_Store
 dist/
+
+# Playwright test artifacts
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Test coverage reports
+coverage/
+.nyc_output/
+
+# E2E test videos and screenshots
+**/*test-results*/
+**/*playwright-report*/
